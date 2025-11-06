@@ -1,0 +1,59 @@
+{% extends 'tickets/base.html' %}
+{% block content %}
+
+<h2>درخواست‌های ارجاع‌شده به من</h2>
+
+<div id="tickets-table">
+    {% include 'tickets/_expert_table.html' %}
+</div>
+
+<script>
+function refreshExpertTable(){
+    fetch("{% url 'expert_dashboard_table' %}")
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("tickets-table").innerHTML = data.html;
+    });
+}
+setInterval(refreshExpertTable, 60000); // هر 1 دقیقه یکبار
+</script>
+
+<!-- دکمه گرفتن مجوز نمایش نوتیفیکیشن -->
+<button onclick="askNotificationPermission()">فعال‌سازی نوتیفیکیشن</button>
+
+
+<script>
+let notifiedTicketIds = [];
+
+function askNotificationPermission(){
+    if (Notification.permission !== "granted") {
+        Notification.requestPermission().then(permission => {
+            if(permission === "granted"){
+                alert("✅ نوتیفیکیشن فعال شد.");
+            }
+        });
+    }
+}
+
+function checkForNewExpertTickets() {
+    fetch("{% url 'check_new_expert_tickets' %}")
+    .then(response => response.json())
+    .then(data => {
+        data.forEach(t => {
+            if (Notification.permission === "granted") {
+                new Notification("📢 درخواست جدید", {
+                    body: `${t.title} (${t.status})`,
+                    icon: "/static/images/alert-icon.png",
+                    requireInteraction: true // تا بسته نشود باقی می‌ماند
+                });
+            }
+            // بعد از نمایش هشدار، ثبت در دیتابیس
+            fetch("{% url 'mark_expert_notified' 0 %}".replace('0', t.id));
+        });
+    });
+}
+
+setInterval(checkForNewExpertTickets, 10000);
+</script>
+
+{% endblock %}

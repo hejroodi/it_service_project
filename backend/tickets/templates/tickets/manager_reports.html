@@ -1,0 +1,31 @@
+{% extends 'tickets/base.html' %}
+{% block title %}گزارش‌ها{% endblock %}
+
+{% block content %}
+<h2>📊 گزارش‌های مدیر IT</h2>
+
+<!-- 🆕 دکمه بازگشت به داشبورد -->
+<a href="{% url 'manager_dashboard' %}" class="btn btn-secondary mb-3">⬅ بازگشت به داشبورد</a>
+
+<h4>آمار کلی بر اساس وضعیت</h4>
+<table class="table table-bordered">
+<tr><th>وضعیت</th><th>تعداد</th></tr>
+{% for s in status_counts %}
+<tr>
+<td>{{ s.status }}</td>
+<td>{{ s.total }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<h4>درخواست‌های 30 روز اخیر بر اساس واحد</h4>
+<table class="table table-bordered">
+<tr><th>واحد</th><th>تعداد</th></tr>
+{% for u in unit_counts %}
+<tr>
+<td>{{ u.unit__name }}</td>
+<td>{{ u.total }}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

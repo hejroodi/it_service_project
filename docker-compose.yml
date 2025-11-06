@@ -1,0 +1,26 @@
+
+
+services:
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: it_service
+      POSTGRES_USER: it_admin
+      POSTGRES_PASSWORD: 12345
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  db_data:

@@ -1,0 +1,75 @@
+{% extends 'tickets/base.html' %}
+{% block title %}پنل مدیر IT{% endblock %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // درخواست مجوز نمایش نوتیفیکیشن
+    if (Notification.permission !== "granted") {
+        Notification.requestPermission();
+    }
+});
+</script>
+
+{% block content %}
+<h2>همه درخواست‌ها</h2>
+<a href="{% url 'manager_reports' %}" class="btn btn-info mb-3">📊 گزارش‌ها</a>
+
+
+<h2>همه درخواست‌ها</h2>
+
+<!-- ناحیه جدول که با AJAX آپدیت میشه -->
+<div id="tickets-table">
+    {% include 'tickets/_manager_table.html' %}
+</div>
+
+<script>
+function refreshManagerTable(){
+    fetch("{% url 'manager_dashboard_table' %}")
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("tickets-table").innerHTML = data.html;
+    });
+}
+// هر 60 ثانیه اجرا شود
+setInterval(refreshManagerTable, 60000);
+</script>
+
+<button onclick="askNotificationPermission()">فعال‌سازی نوتیفیکیشن</button>
+
+<script>
+function askNotificationPermission(){
+    // اگر مجوز نداریم، درخواست بده
+    if (Notification.permission !== "granted") {
+        Notification.requestPermission().then(permission => {
+            if(permission === "granted"){
+                alert("✅ نوتیفیکیشن فعال شد، از این پس هشدارها نمایش داده می‌شوند");
+            } else {
+                alert("❌ مجوز داده نشد. نوتیفیکیشن کار نخواهد کرد.");
+            }
+        });
+    } else {
+        alert("مجوز نوتیفیکیشن قبلاً داده شده یا مسدود شده است.");
+    }
+}
+</script>
+
+<script>
+function checkForNewManagerTickets() {
+    fetch("{% url 'check_new_tickets' %}")
+    .then(response => response.json())
+    .then(data => {
+        if (data.new_tickets > 0) {
+            if (Notification.permission === "granted") {
+                new Notification("📢 درخواست جدید", {
+                    body: `تعداد ${data.new_tickets} درخواست جدید ثبت شده است.`,
+                    icon: "/static/images/alert-icon.png",
+                    requireInteraction: true // 🔹 تا وقتی بسته نشه باقی بمونه
+                });
+            }
+        }
+    });
+}
+setInterval(checkForNewManagerTickets, 60000);
+</script>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}سامانه خدمات IT{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-4">
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+  <a class="navbar-brand" href="#">سامانه خدمات IT</a>
+  <div>
+    <a class="btn btn-secondary" href="{% url 'logout' %}?next=/">خروج</a>
+  </div>
+</nav>
+
+{% block content %}{% endblock %}
+</body>
+</html>

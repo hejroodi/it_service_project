@@ -1,0 +1,31 @@
+{% extends 'tickets/base.html' %}
+{% block content %}
+
+<h2>پروفایل کاربر</h2>
+<p><strong>نام و نام خانوادگی:</strong> {{ request.user.get_full_name }}</p>
+<p><strong>واحد:</strong> {{ request.user.unit.name }}</p>
+
+<hr>
+
+<h2>درخواست‌های من</h2>
+
+<!-- دکمه ثبت درخواست جدید -->
+<a href="{% url 'new_request' %}" class="btn btn-primary mb-3">+ ثبت درخواست جدید</a>
+
+<!-- جدول درخواست‌ها -->
+<div id="tickets-table">
+    {% include 'tickets/_user_table.html' %}
+</div>
+
+<script>
+function refreshUserTable(){
+    fetch("{% url 'user_dashboard_table' %}")
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("tickets-table").innerHTML = data.html;
+    });
+}
+setInterval(refreshUserTable, 60000); // هر 1 دقیقه آپدیت
+</script>
+
+{% endblock %}
