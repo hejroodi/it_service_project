@@ -1,20 +1,15 @@
-{% extends 'tickets/base.html' %}
+{% extends 'tickets/dashboard_base.html' %}
+{% block title %}پنل کاربر{% endblock %}
+
 {% block content %}
+{{ block.super }}
 
-<h2>پروفایل کاربر</h2>
-<p><strong>نام و نام خانوادگی:</strong> {{ request.user.get_full_name }}</p>
-<p><strong>واحد:</strong> {{ request.user.unit.name }}</p>
-
-<hr>
-
-<h2>درخواست‌های من</h2>
-
-<!-- دکمه ثبت درخواست جدید -->
-<a href="{% url 'new_request' %}" class="btn btn-primary mb-3">+ ثبت درخواست جدید</a>
-
-<!-- جدول درخواست‌ها -->
-<div id="tickets-table">
-    {% include 'tickets/_user_table.html' %}
+<!-- فقط بخش درخواست‌های من (اطلاعات کاربری و دکمه ثبت درخواست جدید قبلاً در dashboard_base هست) -->
+<div class="card p-3 shadow-sm mt-4">
+    <h5 class="fw-bold mb-3">درخواست‌های من</h5>
+    <div id="tickets-table">
+        {% include 'tickets/_user_table.html' %}
+    </div>
 </div>
 
 <script>
@@ -25,7 +20,6 @@ function refreshUserTable(){
         document.getElementById("tickets-table").innerHTML = data.html;
     });
 }
-setInterval(refreshUserTable, 60000); // هر 1 دقیقه آپدیت
+setInterval(refreshUserTable, 60000); // هر 60 ثانیه آپدیت جدول
 </script>
-
 {% endblock %}

@@ -1,0 +1,67 @@
+/* 🌐 تنظیمات کلی صفحه */
+body {
+    background-color: #f8f9fa; /* رنگ پس‌زمینه روشن */
+    font-family: 'Vazir', sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* 🎨 نوار منو */
+.navbar {
+    border-radius: 8px;
+    padding: .8rem 1.2rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.navbar-brand {
+    font-weight: 700;
+}
+.navbar .btn {
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+/* 📦 کارت‌ها */
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+/* 🖱 دکمه‌ها */
+.btn {
+    border-radius: 6px;
+    padding: .4rem .9rem;
+    transition: all 0.2s ease-in-out;
+}
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+/* 📊 جدول‌ها */
+.table {
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: white;
+}
+.table thead {
+    background-color: #007bff;
+    color: white;
+}
+.table tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+/* 📝 فرم‌ها */
+.form-control {
+    border-radius: 6px;
+    padding: .45rem .75rem;
+}
+.form-control:focus {
+    box-shadow: 0 0 5px rgba(0,123,255,.5);
+    border-color: #007bff;
+}
+
+/* 📌 فاصله عمومی بخش محتوا */
+.container-content {
+    padding: 20px;
+}

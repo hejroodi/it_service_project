@@ -1,0 +1,84 @@
+{% extends 'tickets/base.html' %}
+{% load custom_tags %}
+
+{% block content %}
+<!-- خوش‌آمدگویی -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card p-3 shadow-sm bg-light">
+            <h4 class="fw-bold mb-0">👋 خوش آمدید {{ user.username }}</h4>
+            <p class="text-muted">این داشبورد مخصوص شماست.</p>
+        </div>
+    </div>
+</div>
+
+<!-- اطلاعات کاربری و دکمه مخصوص -->
+{% if user.is_authenticated %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card p-3 shadow-sm">
+            <h5 class="fw-bold mb-3">اطلاعات کاربری</h5>
+            <p><strong>نام و نام خانوادگی:</strong> {{ user.get_full_name }}</p>
+            {% if user.unit %}
+                <p><strong>واحد:</strong> {{ user.unit.name }}</p>
+            {% endif %}
+
+            {% if user|has_group:"User" %}
+                <a href="{% url 'new_request' %}" class="btn btn-primary mt-3">+ ثبت درخواست جدید</a>
+            {% endif %}
+
+            {% if user|has_group:"Manager" %}
+                <a href="{% url 'manager_reports' %}" class="btn btn-info mt-3">📊 گزارش‌ها</a>
+            {% endif %}
+
+            {% if user|has_group:"Expert" %}
+                <a href="#" onclick="askNotificationPermission()" class="btn btn-warning mt-3">🔔 فعال‌سازی نوتیفیکیشن</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- کارت‌های آمار -->
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card text-center p-3 shadow-sm">
+            <h5 class="fw-bold">درخواست‌های باز</h5>
+            <p class="fs-3 text-primary">{{ open_requests }}</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center p-3 shadow-sm">
+            <h5 class="fw-bold">درخواست‌های تکمیل‌شده</h5>
+            <p class="fs-3 text-success">{{ closed_requests }}</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center p-3 shadow-sm">
+            <h5 class="fw-bold">کل درخواست‌ها</h5>
+            <p class="fs-3 text-secondary">{{ total_requests }}</p>
+        </div>
+    </div>
+</div>
+
+<!-- جدول آخرین درخواست‌ها -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card p-3 shadow-sm">
+            <h5 class="fw-bold mb-3">آخرین درخواست‌ها (ارجاع‌نشده)</h5>
+
+            {% if latest_requests %}
+                {% if user|has_group:"User" %}
+                    {% include 'tickets/_user_table.html' with tickets=latest_requests %}
+                {% elif user|has_group:"Manager" %}
+                    {% include 'tickets/_manager_table.html' with tickets=latest_requests %}
+                {% elif user|has_group:"Expert" %}
+                    {% include 'tickets/_expert_table.html' with tickets=latest_requests %}
+                {% endif %}
+            {% else %}
+                <p class="text-muted">هیچ درخواست جدیدی موجود نیست.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
