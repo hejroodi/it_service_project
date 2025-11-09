@@ -1,25 +1,69 @@
 {% extends 'tickets/dashboard_base.html' %}
 {% block title %}پنل کاربر{% endblock %}
-
 {% block content %}
 {{ block.super }}
 
-<!-- فقط بخش درخواست‌های من (اطلاعات کاربری و دکمه ثبت درخواست جدید قبلاً در dashboard_base هست) -->
+
+
+<!-- 🔸 دکمه‌ها -->
+<div class="mt-3 mb-4 text-center">
+    <a href="{% url 'new_request' %}" class="btn btn-success btn-lg">ثبت درخواست جدید</a>
+
+    {% if not outgoing_wait %}
+        <a href="{% url 'send_file' %}" class="btn btn-info btn-lg">ارسال فایل</a>
+    {% else %}
+        <button class="btn btn-info btn-lg" disabled>ارسال فایل</button>
+    {% endif %}
+
+    {% if incoming_file %}
+        <a href="{% url 'receive_file' %}" class="btn btn-warning btn-lg">دریافت فایل</a>
+    {% else %}
+        <button class="btn btn-warning btn-lg" disabled>دریافت فایل</button>
+    {% endif %}
+</div>
+
+<!-- 🔸 درخواست‌های فعال -->
 <div class="card p-3 shadow-sm mt-4">
-    <h5 class="fw-bold mb-3">درخواست‌های من</h5>
-    <div id="tickets-table">
-        {% include 'tickets/_user_table.html' %}
+    <h5 class="fw-bold mb-3">📌 درخواست‌های فعال</h5>
+    <div id="active-tickets-table">
+        {% include 'tickets/_user_table_active.html' with tickets=active_tickets %}
     </div>
 </div>
 
+<!-- 🔸 درخواست‌های تمام‌شده -->
+<div class="card p-3 shadow-sm mt-4">
+    <h5 class="fw-bold mb-3 text-success">✅ درخواست‌های تمام‌شده</h5>
+    <div id="done-tickets-table">
+        {% include 'tickets/_user_table_done.html' with tickets=done_tickets %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
 <script>
-function refreshUserTable(){
+function refreshUserTables(){
     fetch("{% url 'user_dashboard_table' %}")
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            console.error("AJAX error:", response.status);
+            return;
+        }
+        return response.json();
+    })
     .then(data => {
-        document.getElementById("tickets-table").innerHTML = data.html;
+        if (!data) return;
+        if (data.html_active) {
+            document.getElementById("active-tickets-table").innerHTML = data.html_active;
+        }
+        if (data.html_done) {
+            document.getElementById("done-tickets-table").innerHTML = data.html_done;
+        }
+    })
+    .catch(err => {
+        console.error("Fetch exception:", err);
     });
 }
-setInterval(refreshUserTable, 60000); // هر 60 ثانیه آپدیت جدول
+// تنظیم رفرش هر 60 ثانیه
+setInterval(refreshUserTables, 60000);
 </script>
 {% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'tickets/base.html' %}
+{% block title %}ویرایش اطلاعات تماس{% endblock %}
+{% block content %}
+<h3>اطلاعات تماس</h3>
+<p class="text-muted">لطفا شماره تماس خود را صحیح وارد کنید. کارشناس فناوری با شماره درج شده تماس خواهد گرفت.</p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">ذخیره</button>
+    <a href="{% url 'user_dashboard' %}" class="btn btn-secondary">انصراف</a>
+</form>
+{% endblock %}

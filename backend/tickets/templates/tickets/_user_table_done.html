@@ -1,0 +1,111 @@
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>عنوان درخواست</th>
+            <th>توضیحات</th>
+            <th>واحد</th>
+            <th>نوع خدمت</th>
+            <th>وضعیت</th>
+            <th>توسط</th>
+            <th>قبل از من چند درخواست است</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for t in tickets %}
+    <tr>
+        <!-- عنوان -->
+        <td style="
+            {% if t.status == 'done' %}
+                background-color: rgba(40, 167, 69, 0.15) !important;
+            {% elif t.status == 'in_progress' %}
+                background-color: rgba(220, 53, 69, 0.15) !important;
+            {% else %}
+                background-color: rgba(23, 162, 184, 0.15) !important;
+            {% endif %}
+        ">{{ t.title }}</td>
+
+        <!-- توضیحات -->
+        <td style="
+            {% if t.status == 'done' %}
+                background-color: rgba(40, 167, 69, 0.15) !important;
+            {% elif t.status == 'in_progress' %}
+                background-color: rgba(220, 53, 69, 0.15) !important;
+            {% else %}
+                background-color: rgba(23, 162, 184, 0.15) !important;
+            {% endif %}
+        ">{{ t.description }}</td>
+
+        <!-- واحد -->
+        <td style="
+            {% if t.status == 'done' %}
+                background-color: rgba(40, 167, 69, 0.15) !important;
+            {% elif t.status == 'in_progress' %}
+                background-color: rgba(220, 53, 69, 0.15) !important;
+            {% else %}
+                background-color: rgba(23, 162, 184, 0.15) !important;
+            {% endif %}
+        ">{{ t.unit.name }}</td>
+
+        <!-- نوع خدمت -->
+        <td style="
+            {% if t.status == 'done' %}
+                background-color: rgba(40, 167, 69, 0.15) !important;
+            {% elif t.status == 'in_progress' %}
+                background-color: rgba(220, 53, 69, 0.15) !important;
+            {% else %}
+                background-color: rgba(23, 162, 184, 0.15) !important;
+            {% endif %}
+        ">{{ t.service_type.name }}</td>
+
+        <!-- وضعیت -->
+        <td style="
+            {% if t.status == 'done' %}
+                background-color: rgba(40, 167, 69, 0.15) !important;
+            {% elif t.status == 'in_progress' %}
+                background-color: rgba(220, 53, 69, 0.15) !important;
+            {% else %}
+                background-color: rgba(23, 162, 184, 0.15) !important;
+            {% endif %}
+        ">{{ t.get_status_display }}</td>
+
+        <!-- در کارتابل چه کسی -->
+        <td style="
+            {% if t.status == 'done' %}
+                background-color: rgba(40, 167, 69, 0.15) !important;
+            {% elif t.status == 'in_progress' %}
+                background-color: rgba(220, 53, 69, 0.15) !important;
+            {% else %}
+                background-color: rgba(23, 162, 184, 0.15) !important;
+            {% endif %}
+        ">
+            {% if t.assigned_to %}
+                {{ t.assigned_to.get_full_name }}
+            {% else %}
+                ارجاع نشده
+            {% endif %}
+        </td>
+
+        <!-- قبل از من چند درخواست است -->
+        <td style="
+            {% if t.status == 'done' %}
+                background-color: rgba(40, 167, 69, 0.15) !important;
+            {% elif t.status == 'in_progress' %}
+                background-color: rgba(220, 53, 69, 0.15) !important;
+            {% else %}
+                background-color: rgba(23, 162, 184, 0.15) !important;
+            {% endif %}
+        ">
+            {% if t.before_count is not None %}
+                {{ t.before_count }}
+            {% else %}
+                -
+            {% endif %}
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="7" class="text-center">هیچ درخواست ثبت نشده است.</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

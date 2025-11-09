@@ -1,61 +1,29 @@
 {% extends 'tickets/dashboard_base.html' %}
 {% block title %}پنل کارشناس IT{% endblock %}
-
 {% block content %}
 {{ block.super }}
 
-<!-- بخش اختصاصی کارشناس -->
+<!-- درخواست‌های فعال -->
 <div class="card p-3 shadow-sm mt-4">
-    <h5 class="fw-bold mb-3">درخواست‌های تخصیص‌یافته به من</h5>
-    <div id="tickets-table">
-        {% include 'tickets/_expert_table.html' %}
-    </div>
-
-    <!-- دکمه گرفتن مجوز نوتیفیکیشن -->
-    <div class="mt-3">
-        <button onclick="askNotificationPermission()" class="btn btn-warning">🔔 فعال‌سازی نوتیفیکیشن</button>
-    </div>
+    <h5 class="fw-bold mb-3">📌 درخواست‌های فعال</h5>
+    {% include 'tickets/_expert_table.html' with tickets=active_tickets %}
 </div>
 
-<!-- 🔹 اسکریپت ها -->
+<!-- درخواست‌های تمام‌شده -->
+<div class="card p-3 shadow-sm mt-4">
+    <h5 class="fw-bold mb-3 text-success">✅ درخواست‌های تمام‌شده</h5>
+    {% include 'tickets/_expert_table.html' with tickets=done_tickets %}
+</div>
+
 <script>
-function refreshExpertTable(){
+function refreshExpertTables(){
     fetch("{% url 'expert_dashboard_table' %}")
     .then(response => response.json())
     .then(data => {
-        document.getElementById("tickets-table").innerHTML = data.html;
+        document.getElementById("active-tickets-table").innerHTML = data.html_active;
+        document.getElementById("done-tickets-table").innerHTML = data.html_done;
     });
 }
-// هر 60 ثانیه رفرش جدول
-setInterval(refreshExpertTable, 60000);
-
-function askNotificationPermission(){
-    if (Notification.permission !== "granted") {
-        Notification.requestPermission().then(permission => {
-            if(permission === "granted"){
-                alert("✅ نوتیفیکیشن فعال شد.");
-            }
-        });
-    }
-}
-
-function checkForNewExpertTickets() {
-    fetch("{% url 'check_new_expert_tickets' %}")
-    .then(response => response.json())
-    .then(data => {
-        data.forEach(t => {
-            if (Notification.permission === "granted") {
-                new Notification("📢 درخواست جدید", {
-                    body: `${t.title} (${t.status})`,
-                    icon: "/static/images/alert-icon.png",
-                    requireInteraction: true
-                });
-            }
-            fetch("{% url 'mark_expert_notified' 0 %}".replace('0', t.id));
-        });
-    });
-}
-// هر 10 ثانیه بررسی درخواست‌های جدید
-setInterval(checkForNewExpertTickets, 10000);
+setInterval(refreshExpertTables, 60000);
 </script>
 {% endblock %}

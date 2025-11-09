@@ -1,0 +1,11 @@
+{% extends 'tickets/base.html' %}
+{% block title %}ارسال فایل{% endblock %}
+{% block content %}
+<h3>ارسال فایل به کاربر دیگر</h3>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">ارسال</button>
+</form>
+{% endblock %}

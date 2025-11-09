@@ -1,9 +1,9 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}سامانه خدمات IT{% endblock %}</title>
+    <title>{% block title %}سامانه خدمات فناوری اطلاعات{% endblock %}</title>
     <!-- Bootstrap آفلاین -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <!-- فونت فارسی -->
@@ -11,19 +11,32 @@
     <!-- استایل اختصاصی -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 </head>
-<body class="container mt-4">
+<body class="container mt-4 text-right">
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4 rounded shadow-sm">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold" href="#">سامانه خدمات IT</a>
-    <div>
-      <a class="btn btn-light btn-sm" href="{% url 'logout' %}?next=/">خروج</a>
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+
+    <!-- عنوان سمت راست -->
+    <span class="navbar-brand fw-bold">سامانه خدمات فناوری اطلاعات</span>
+
+    <!-- سمت چپ: اطلاعات کاربر + خروج -->
+    <div class="d-flex align-items-center">
+        {% if user.is_authenticated %}
+            <span class="text-white fw-bold">
+                {{ user.get_full_name }}
+                {% if user.unit %}
+                    - {{ user.unit.name }}
+                {% endif %}
+            </span>
+        {% endif %}
+        <a class="btn btn-light btn-sm me-3" href="{% url 'logout' %}?next=/">خروج</a>
     </div>
+
   </div>
 </nav>
 
 <div class="card p-4 shadow-sm bg-white rounded">
-{% block content %}{% endblock %}
+    {% block content %}{% endblock %}
 </div>
 
 <!-- Bootstrap JS آفلاین -->

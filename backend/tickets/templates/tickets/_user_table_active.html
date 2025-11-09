@@ -1,15 +1,14 @@
 <table class="table table-striped table-bordered">
     <thead>
         <tr>
-            <th>عنوان</th>
-            <th>درخواست‌دهنده</th>
-            <th>اطلاعات تماس</th> <!-- ستون جدید -->
+            <th>عنوان درخواست</th>
+            <th>توضیحات</th>
             <th>واحد</th>
             <th>نوع خدمت</th>
-            <th>توضیحات</th>
-            <th>تاریخ ثبت</th>
             <th>وضعیت</th>
-            <th>ارجاع به کارشناس</th>
+            <th>در کارتابل چه کسی</th>
+            <th>قبل از من چند درخواست است</th>
+            <th>اقدام</th>
         </tr>
     </thead>
     <tbody>
@@ -22,26 +21,18 @@
             {{ t.title }}
         </td>
 
-        <!-- درخواست‌دهنده -->
+        <!-- توضیحات -->
         <td style="{% if t.status == 'done' %}background-color: rgba(40, 167, 69, 0.15);
                     {% elif t.status == 'in_progress' %}background-color: rgba(220, 53, 69, 0.15);
                     {% else %}background-color: rgba(23, 162, 184, 0.15);{% endif %}">
-            {{ t.requester.get_full_name }}
+            {{ t.description }}
         </td>
-
- <!-- اطلاعات تماس -->
-<td style="{% if t.status == 'done' %}background-color: rgba(40, 167, 69, 0.15);
-            {% elif t.status == 'in_progress' %}background-color: rgba(220, 53, 69, 0.15);
-            {% else %}background-color: rgba(23, 162, 184, 0.15);{% endif %}">
-    📞 {{ t.requester.phone_number|default:"-" }}<br>
-    🏢 {{ t.requester.room_number|default:"-" }}
-</td>
 
         <!-- واحد -->
         <td style="{% if t.status == 'done' %}background-color: rgba(40, 167, 69, 0.15);
                     {% elif t.status == 'in_progress' %}background-color: rgba(220, 53, 69, 0.15);
                     {% else %}background-color: rgba(23, 162, 184, 0.15);{% endif %}">
-            {{ t.requester.unit.name }}
+            {{ t.unit.name }}
         </td>
 
         <!-- نوع خدمت -->
@@ -51,20 +42,6 @@
             {{ t.service_type.name }}
         </td>
 
-        <!-- توضیحات -->
-        <td style="{% if t.status == 'done' %}background-color: rgba(40, 167, 69, 0.15);
-                    {% elif t.status == 'in_progress' %}background-color: rgba(220, 53, 69, 0.15);
-                    {% else %}background-color: rgba(23, 162, 184, 0.15);{% endif %}">
-            {{ t.description }}
-        </td>
-
-        <!-- تاریخ ثبت -->
-        <td style="{% if t.status == 'done' %}background-color: rgba(40, 167, 69, 0.15);
-                    {% elif t.status == 'in_progress' %}background-color: rgba(220, 53, 69, 0.15);
-                    {% else %}background-color: rgba(23, 162, 184, 0.15);{% endif %}">
-            {{ t.created_at|date:"Y-m-d H:i" }}
-        </td>
-
         <!-- وضعیت -->
         <td style="{% if t.status == 'done' %}background-color: rgba(40, 167, 69, 0.15);
                     {% elif t.status == 'in_progress' %}background-color: rgba(220, 53, 69, 0.15);
@@ -72,29 +49,64 @@
             {{ t.get_status_display }}
         </td>
 
-        <!-- ارجاع به کارشناس -->
+        <!-- در کارتابل چه کسی -->
         <td style="{% if t.status == 'done' %}background-color: rgba(40, 167, 69, 0.15);
                     {% elif t.status == 'in_progress' %}background-color: rgba(220, 53, 69, 0.15);
                     {% else %}background-color: rgba(23, 162, 184, 0.15);{% endif %}">
-            {% if t.status != 'done' %}
-                <form method="post" action="{% url 'assign_expert' t.id %}">
-                    {% csrf_token %}
-                    <select name="expert_id" class="form-select form-select-sm">
-                        {% for e in experts %}
-                            <option value="{{ e.id }}" {% if t.assigned_to and e.id == t.assigned_to.id %}selected{% endif %}>
-                                {% if e.get_full_name %}{{ e.get_full_name }}{% else %}{{ e.username }}{% endif %}
-                            </option>
-                        {% endfor %}
-                    </select>
-                    <button type="submit" class="btn btn-sm btn-primary mt-1">ارجاع</button>
-                </form>
+            {% if t.assigned_to %}
+                {{ t.assigned_to.get_full_name }}
+                <br>
+                <small>📞 {{ t.assigned_to.phone_number|default:"-" }}</small>
+                <br>
+                <small>🏢 اتاق: {{ t.assigned_to.room_number|default:"-" }}</small>
             {% else %}
-                کامل شده
+                مدیر فناوری  
+                {% with manager=managers.0 %}
+                    <br>
+                    <small>📞 {{ manager.phone_number|default:"-" }}</small>
+                    <br>
+                    <small>🏢 اتاق: {{ manager.room_number|default:"-" }}</small>
+                {% endwith %}
+            {% endif %}
+        </td>
+
+        <!-- قبل از من چند درخواست است -->
+        <td style="{% if t.status == 'done' %}background-color: rgba(40, 167, 69, 0.15);
+                    {% elif t.status == 'in_progress' %}background-color: rgba(220, 53, 69, 0.15);
+                    {% else %}background-color: rgba(23, 162, 184, 0.15);{% endif %}">
+            {% if t.before_count is not None %}
+                {{ t.before_count }}
+            {% else %}
+                -
+            {% endif %}
+        </td>
+
+        <!-- اقدام -->
+        <td style="{% if t.status == 'done' %}background-color: rgba(40, 167, 69, 0.15);
+                    {% elif t.status == 'in_progress' %}background-color: rgba(220, 53, 69, 0.15);
+                    {% else %}background-color: rgba(23, 162, 184, 0.15);{% endif %}">
+            {% if t.status == 'new' and not t.assigned_to %}
+                <a href="{% url 'edit_request' t.id %}" class="text-warning fw-bold me-2" style="text-decoration:none;">
+                    ویرایش
+                </a>
+                <a href="{% url 'delete_request' t.id %}" class="text-danger fw-bold me-2" style="text-decoration:none;"
+                   onclick="return confirm('آیا مطمئن هستید؟')">
+                    حذف
+                </a>
+            {% endif %}
+
+            <!-- گفت‌وگو با چشمک اگر پیام خوانده‌نشده -->
+            {% if t.has_unread %}
+                <a href="{% url 'ticket_messages' t.id %}" class="btn btn-sm btn-outline-info blink">گفتگو</a>
+            {% else %}
+                <a href="{% url 'ticket_messages' t.id %}" class="btn btn-sm btn-outline-info">گفتگو</a>
             {% endif %}
         </td>
     </tr>
     {% empty %}
-    <tr><td colspan="9" class="text-center">هیچ درخواست ثبت نشده است.</td></tr>
+    <tr>
+        <td colspan="8" class="text-center">هیچ درخواست ثبت نشده است.</td>
+    </tr>
     {% endfor %}
     </tbody>
 </table>
