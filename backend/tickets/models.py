@@ -114,3 +114,26 @@ class TicketMessage(models.Model):
 
     def __str__(self):
         return f"Message from {self.sender} in Ticket {self.ticket.id}"
+
+
+class Hardware(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='hardwares')
+    title = models.CharField(max_length=200)
+    model = models.CharField(max_length=200, blank=True)
+    brand = models.CharField(max_length=200, blank=True)
+    asset_number = models.CharField(max_length=100, blank=True)  # شماره اموال
+
+    def __str__(self):
+        return f"{self.title} ({self.user.username})"
+
+
+class Software(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='softwares')
+    title = models.CharField(max_length=200)
+    version = models.CharField(max_length=100, blank=True)
+    vendor = models.CharField(max_length=200, blank=True)
+
+    def __str__(self):
+        return f"{self.title} ({self.user.username})"
+
+

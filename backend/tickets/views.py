@@ -21,7 +21,9 @@ from .forms import (
 from .models import (
     Ticket,
     User,
-    FileTransfer
+    FileTransfer,
+    Hardware,  
+    Software 
 )
 
 # ====================== فایل‌ها ======================
@@ -111,6 +113,10 @@ def user_dashboard(request):
     outgoing_wait = FileTransfer.objects.filter(sender=request.user, downloaded=False).exists()
     managers = User.objects.filter(role='manager')
 
+    # 👇 گرفتن سخت‌افزارها و نرم‌افزارهای کاربر
+    hardwares = Hardware.objects.filter(user=request.user)
+    softwares = Software.objects.filter(user=request.user)
+
     return render(request, 'tickets/user_dashboard.html', {
         'active_tickets': active_tickets,
         'done_tickets': done_tickets,
@@ -120,6 +126,8 @@ def user_dashboard(request):
         'incoming_file': incoming_file,
         'outgoing_wait': outgoing_wait,
         'managers': managers,
+        'hardwares': hardwares,     # 👈 ارسال به قالب
+        'softwares': softwares      # 👈 ارسال به قالب
     })
 
 

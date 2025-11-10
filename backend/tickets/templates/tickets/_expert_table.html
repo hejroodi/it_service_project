@@ -15,64 +15,55 @@
     <tbody>
     {% for t in tickets %}
     <tr>
-        <!-- عنوان -->
-        <td style="{% if t.status == 'done' %}background-color: rgba(40, 167, 69, 0.15);
-                    {% elif t.status == 'in_progress' %}background-color: rgba(220, 53, 69, 0.15);
-                    {% else %}background-color: rgba(23, 162, 184, 0.15);{% endif %}">
+        <td style="{% if t.status == 'done' %}background-color: rgba(40,167,69,0.15);
+                    {% elif t.status == 'in_progress' %}background-color: rgba(220,53,69,0.15);
+                    {% else %}background-color: rgba(23,162,184,0.15);{% endif %}">
             {{ t.title }}
         </td>
 
-        <!-- نام درخواست‌دهنده -->
-        <td style="{% if t.status == 'done' %}background-color: rgba(40, 167, 69, 0.15);
-                    {% elif t.status == 'in_progress' %}background-color: rgba(220, 53, 69, 0.15);
-                    {% else %}background-color: rgba(23, 162, 184, 0.15);{% endif %}">
+        <td style="{% if t.status == 'done' %}background-color: rgba(40,167,69,0.15);
+                    {% elif t.status == 'in_progress' %}background-color: rgba(220,53,69,0.15);
+                    {% else %}background-color: rgba(23,162,184,0.15);{% endif %}">
             {{ t.requester.get_full_name }}
         </td>
 
-        <!-- اطلاعات تماس -->
-        <td style="{% if t.status == 'done' %}background-color: rgba(40, 167, 69, 0.15);
-                    {% elif t.status == 'in_progress' %}background-color: rgba(220, 53, 69, 0.15);
-                    {% else %}background-color: rgba(23, 162, 184, 0.15);{% endif %}">
+        <td style="{% if t.status == 'done' %}background-color: rgba(40,167,69,0.15);
+                    {% elif t.status == 'in_progress' %}background-color: rgba(220,53,69,0.15);
+                    {% else %}background-color: rgba(23,162,184,0.15);{% endif %}">
             📞 {{ t.requester.phone_number|default:"-" }}<br>
             🏢 {{ t.requester.room_number|default:"-" }}
         </td>
 
-        <!-- واحد -->
-        <td style="{% if t.status == 'done' %}background-color: rgba(40, 167, 69, 0.15);
-                    {% elif t.status == 'in_progress' %}background-color: rgba(220, 53, 69, 0.15);
-                    {% else %}background-color: rgba(23, 162, 184, 0.15);{% endif %}">
+        <td style="{% if t.status == 'done' %}background-color: rgba(40,167,69,0.15);
+                    {% elif t.status == 'in_progress' %}background-color: rgba(220,53,69,0.15);
+                    {% else %}background-color: rgba(23,162,184,0.15);{% endif %}">
             {{ t.requester.unit.name }}
         </td>
 
-        <!-- نوع خدمت -->
-        <td style="{% if t.status == 'done' %}background-color: rgba(40, 167, 69, 0.15);
-                    {% elif t.status == 'in_progress' %}background-color: rgba(220, 53, 69, 0.15);
-                    {% else %}background-color: rgba(23, 162, 184, 0.15);{% endif %}">
+        <td style="{% if t.status == 'done' %}background-color: rgba(40,167,69,0.15);
+                    {% elif t.status == 'in_progress' %}background-color: rgba(220,53,69,0.15);
+                    {% else %}background-color: rgba(23,162,184,0.15);{% endif %}">
             {{ t.service_type.name }}
         </td>
 
-        <!-- توضیحات -->
-        <td style="{% if t.status == 'done' %}background-color: rgba(40, 167, 69, 0.15);
-                    {% elif t.status == 'in_progress' %}background-color: rgba(220, 53, 69, 0.15);
-                    {% else %}background-color: rgba(23, 162, 184, 0.15);{% endif %}">
+        <td style="{% if t.status == 'done' %}background-color: rgba(40,167,69,0.15);
+                    {% elif t.status == 'in_progress' %}background-color: rgba(220,53,69,0.15);
+                    {% else %}background-color: rgba(23,162,184,0.15);{% endif %}">
             {{ t.description }}
         </td>
 
-        <!-- تاریخ ثبت -->
-        <td style="{% if t.status == 'done' %}background-color: rgba(40, 167, 69, 0.15);
-                    {% elif t.status == 'in_progress' %}background-color: rgba(220, 53, 69, 0.15);
-                    {% else %}background-color: rgba(23, 162, 184, 0.15);{% endif %}">
+        <td style="{% if t.status == 'done' %}background-color: rgba(40,167,69,0.15);
+                    {% elif t.status == 'in_progress' %}background-color: rgba(220,53,69,0.15);
+                    {% else %}background-color: rgba(23,162,184,0.15);{% endif %}">
             {{ t.created_at|date:"Y-m-d H:i" }}
         </td>
 
-        <!-- وضعیت -->
-        <td style="{% if t.status == 'done' %}background-color: rgba(40, 167, 69, 0.15);
-                    {% elif t.status == 'in_progress' %}background-color: rgba(220, 53, 69, 0.15);
-                    {% else %}background-color: rgba(23, 162, 184, 0.15);{% endif %}">
+        <td style="{% if t.status == 'done' %}background-color: rgba(40,167,69,0.15);
+                    {% elif t.status == 'in_progress' %}background-color: rgba(220,53,69,0.15);
+                    {% else %}background-color: rgba(23,162,184,0.15);{% endif %}">
             {{ t.get_status_display }}
         </td>
 
-        <!-- اقدام -->
         <td>
             {% if t.status != 'done' %}
                 <form method="post" action="{% url 'mark_done' t.id %}" style="display:inline;">
@@ -87,9 +78,8 @@
                 انجام شده
             {% endif %}
 
-            <!-- گفت‌وگو با چشمک اگر پیام خوانده‌نشده -->
             {% if t.has_unread %}
-                <a href="{% url 'ticket_messages' t.id %}" class="btn btn-sm btn-outline-info mt-1 blink">گفتگو</a>
+                <a href="{% url 'ticket_messages' t.id %}" class="btn btn-sm btn-outline-info mt-1 blink">پیام جدید</a>
             {% else %}
                 <a href="{% url 'ticket_messages' t.id %}" class="btn btn-sm btn-outline-info mt-1">گفتگو</a>
             {% endif %}
